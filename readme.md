@@ -28,3 +28,9 @@ www.mongolab.com.
 	-- sp-flow_super_public_topics.csv --> contains the topics associated with each post
 	-- sp-flow_super_public_hashtags.csv --> contains the hashtags associated with each post
 	-- sp-flow_super_public_links.csv --> contains the links associated with each post
+
+Note: the package.json file is broken -- to run the node.js scripts you will need to install via npm:
+* assert
+* fs
+* moment
+* mongodb
