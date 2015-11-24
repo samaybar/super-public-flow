@@ -17,6 +17,7 @@ MONGOAPIKEY="<MONGODB_API_KEY>"
 DBNAME="<MONGO_DATABASE_NAME>"
 COLLECTIONNAME="<MONGO_COLLECTION_NAME>"
 
+#to run on mac manually set the variables below to be equal to the desired start and end times
 STARTUNIX=$(date  --date=$STARTDATE +%s)
 ENDUNIX=$(date  --date=$ENDDATE +%s)
 #echo $STARTUNIX
