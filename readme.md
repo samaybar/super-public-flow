@@ -2,9 +2,9 @@
 These tools are to help manage Super Public Data for PYLON.
 
 There are three primary tools here:
-1) A bash script to be run as a cron job that will collect super public data from a PYLON index and send it to a mongoDB database
-2) a node.js script to grab Super Public data stored in a mongoDB and write it to a local file
-3) a node.js script to take the Super Public data from the file and write it to four CSV tables for use in Tableau.
+* 1) A bash script to be run as a cron job that will collect super public data from a PYLON index and send it to a mongoDB database
+* 2) a node.js script to grab Super Public data stored in a mongoDB and write it to a local file
+* 3) a node.js script to take the Super Public data from the file and write it to four CSV tables for use in Tableau.
 
 This workflow has been created to work in conjunction with a MongoDB instance set up at www.mongolab.com, but it could easily be modified to work with other instances of a mongodb.
 
