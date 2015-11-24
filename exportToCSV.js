@@ -3,11 +3,9 @@ var moment = require('moment');
 var settings = require('./settings.js');
 
 //The name of data file to use -- created from getMongo.js
-//var sourceData = 'mongotest3.js';
 var sourceData = settings.rawDataFileName;
 
 //prefix to use for output csv files
-//var outputFilePrefix = 'sp-flow';
 var outputFilePrefix = settings.outputFilePrefix;
 
 //Is this an existing file you are adding to or a new file?

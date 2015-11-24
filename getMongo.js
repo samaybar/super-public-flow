@@ -14,11 +14,9 @@ var settings = require('./settings.js');
 var url = settings.url;
 
 //var outputFileName = '<FILENAME>.js';
-//var outputFileName = 'mongotest3.js';
 var outputFileName = settings.rawDataFileName;
 
 //var collectionName = '<COLLECTION_NAME>';
-//var collectionName = 'superpublic_auto';
 var collectionName = settings.collectionName;
 
 //retrieve data collected after this time
@@ -50,7 +48,7 @@ var findSuperPublic = function(db, callback) {
 MongoClient.connect(url, function(err, db) {
   assert.equal(null, err);
   findSuperPublic(db, function() {
-      console.log(JSON.stringify(superPublicData));
+      //console.log(JSON.stringify(superPublicData));
       writeData(superPublicData,outputFileName);
       db.close();
   });
