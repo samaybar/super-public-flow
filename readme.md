@@ -8,6 +8,8 @@ There are three primary tools here:
 
 This workflow has been created to work in conjunction with a MongoDB instance set up at www.mongolab.com, but it could easily be modified to work with other instances of a mongodb.
 
+npm install to install node.js dependencies
+
 #Overview
 The goal is to be able to pull up to 100 super public items every hour and send them to a database.
 
@@ -29,8 +31,4 @@ www.mongolab.com.
 	-- sp-flow_super_public_hashtags.csv --> contains the hashtags associated with each post
 	-- sp-flow_super_public_links.csv --> contains the links associated with each post
 
-Note: the package.json file is broken -- to run the node.js scripts you will need to install via npm:
-* assert
-* fs
-* moment
-* mongodb
+
