@@ -1,0 +1,11 @@
+{
+  "name": "super-public-flow",
+  "version": "1.0.0",
+  "description": "tools to pull super public data, send to mongodb, convert to csv",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sra",
+  "license": "ISC"
+}
