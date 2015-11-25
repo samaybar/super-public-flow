@@ -74,7 +74,7 @@ function jsonToCsv(data) {
         createdDate = contentDate.replace(/(.+?),\s/g,'');
         //version of date without time
         
-        shortDate = moment(contentDate).format("MM/DD/YYYY");
+        shortDate = moment.utc(contentDate).format("MM/DD/YYYY HH:mm:ss");
         writeData.content += '\"' + data.interactions[i].interaction.id + '\"';
         writeData.content += ',\"' + shortDate + '\"';
         writeData.content += ',\"' + createdDate + '\"';
