@@ -33,8 +33,8 @@ var sample = data;
 
 
 
-console.log(sample.length + " length");
-console.log(sample[26].interactions[0]);
+//console.log(sample.length + " length");
+
 
 for (var k = 0; k < sample.length; k++){ 
   console.log("pass "+k+" on sample table");
