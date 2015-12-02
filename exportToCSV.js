@@ -31,20 +31,30 @@ var linkFileName = outputFilePrefix + "_super_public_links.csv";
 
 var sample = data;
 
+var writeData = {content : '', topics : '', hashtags : '', links : ''};
 
+//write content table
+if(contentHeader){  
+  writeData.content = 'id,date,created_at,content,media_type,subtype,language\n';
+  contentHeader = false;
+}
+writeData.topics = '';
+writeData.hashtags = '';
+writeData.links = '';
+var csvSample;
 
 //console.log(sample.length + " length");
 
 
 for (var k = 0; k < sample.length; k++){ 
   console.log("pass "+k+" on sample table");
-  var csvSample = jsonToCsv(sample[k]);
-  
-  writeData(csvSample.content,outputFileName);
-  writeData(csvSample.topics,topicFileName);
-  writeData(csvSample.hashtags,hashtagFileName);
-  writeData(csvSample.links,linkFileName);
-}
+  csvSample = jsonToCsv(sample[k]);
+}  
+  writeToFile(csvSample.content,outputFileName);
+  writeToFile(csvSample.topics,topicFileName);
+  writeToFile(csvSample.hashtags,hashtagFileName);
+  writeToFile(csvSample.links,linkFileName);
+
 
 /**
  * jsonContentToCsv - results object to array of csv strings
@@ -54,16 +64,7 @@ for (var k = 0; k < sample.length; k++){
  */
 function jsonToCsv(data) {
     console.log("items: " + data.interactions.length);
-    var writeData = {content : '', topics : '', hashtags : '', links : ''};
-    
-    //write content table
-    if(contentHeader){  
-      writeData.content = 'id,date,created_at,content,media_type,subtype,language\n';
-      contentHeader = false;
-    }
-    writeData.topics = '';
-    writeData.hashtags = '';
-    writeData.links = '';
+
     for (var i = 0; i < data.interactions.length; i++) {
         var interactionText = data.interactions[i].interaction.content
         interactionText = interactionText.replace(/\n/g,' \\n');
@@ -139,7 +140,7 @@ function jsonToCsv(data) {
 }
 
 
-function writeData(outputData,fileName){
+function writeToFile(outputData,fileName){
   fs.appendFile(fileName, outputData, function(err) {
     if(err) {
         return console.log(err);
