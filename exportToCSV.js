@@ -10,8 +10,19 @@ var outputFilePrefix = settings.outputFilePrefix;
 
 //Is this an existing file you are adding to or a new file?
 var useHeaders = settings.useHeaders; //true for a new file -- it will put headers in; false will supress headers
+var indexTags = settings.indexTags;
 
+var writeData = {content : '', topics : '', hashtags : '', links : ''};
 
+var vedoHeader = {};
+var vedoFileName = {};
+for (var z = 0; z < indexTags.length; z++){
+  vedoHeader[indexTags[z]] = useHeaders;
+  vedoFileName[indexTags[z]] = outputFilePrefix + "_super_public_" + indexTags[z] + ".csv";
+  console.log(vedoFileName[indexTags[z]]);
+  writeData[indexTags[z]] = '';
+}
+console.log(vedoHeader);
 
 
 
@@ -23,38 +34,48 @@ var data = require('./' + sourceData);
 var contentHeader = useHeaders, topicHeader = useHeaders, hashtagHeader = useHeaders, linkHeader = useHeaders;
 
 
+var vedoBrandHeader = useHeaders, vedoTypeHeader = useHeaders
+
 var outputFileName = outputFilePrefix + "_super_public_sample.csv";
 var topicFileName = outputFilePrefix + "_super_public_topics.csv";
 var hashtagFileName = outputFilePrefix + "_super_public_hashtags.csv";
 var linkFileName = outputFilePrefix + "_super_public_links.csv";
+//var vedoBrandFileName = outputFilePrefix + "_super_public_vedobrand.csv";
+//var vedoTypeFileName = outputFilePrefix + "_super_public_vedotype.csv";
 
 
 var sample = data;
 
-var writeData = {content : '', topics : '', hashtags : '', links : ''};
+
 
 //write content table
 if(contentHeader){  
   writeData.content = 'id,date,created_at,content,media_type,subtype,language\n';
   contentHeader = false;
 }
-writeData.topics = '';
+/*writeData.topics = '';
 writeData.hashtags = '';
-writeData.links = '';
+writeData.links = '';*/
+//writeData.vedoBrands = '';
+//writeData.vedoTypes = '';
 var csvSample;
 
 //console.log(sample.length + " length");
 
 
 for (var k = 0; k < sample.length; k++){ 
-  console.log("pass "+k+" on sample table");
+  //console.log("pass "+k+" on sample table");
   csvSample = jsonToCsv(sample[k]);
+  //jsonToCsv(sample[k]);
 }  
   writeToFile(csvSample.content,outputFileName);
   writeToFile(csvSample.topics,topicFileName);
   writeToFile(csvSample.hashtags,hashtagFileName);
   writeToFile(csvSample.links,linkFileName);
-
+  for (var z = 0; z < indexTags.length; z++){
+  writeToFile(csvSample[indexTags[z]],vedoFileName[indexTags[z]]); 
+}
+ 
 
 /**
  * jsonContentToCsv - results object to array of csv strings
@@ -84,7 +105,7 @@ function jsonToCsv(data) {
         writeData.content += ',\"' + data.interactions[i].interaction.subtype + '\"';
         writeData.content += ',\"' + data.interactions[i].fb.language + '\"\n';
         //console.log("pass "+i+" on main table");
-        console.log("pass "+i+" on main table");
+        //console.log("pass "+i+" on main table");
         
         //write topic table
         if (data.interactions[i].fb.topics) {
@@ -130,6 +151,16 @@ function jsonToCsv(data) {
             writeData.links += ',\"' + data.interactions[i].links.url[j] + '\"\n';
           }
         }
+
+        //write tags
+        if (data.interactions[i].interaction.tag_tree){
+          for (var y = 0; y < indexTags.length; y++){
+            getTagData(data.interactions[i].interaction,indexTags[y]);
+          }
+        }
+
+
+        
     }
     
 
@@ -139,6 +170,24 @@ function jsonToCsv(data) {
     return writeData;
 }
 
+function getTagData(interactionNode, nameSpace){
+//write Tag_Tree Table
+        if (interactionNode.tag_tree && interactionNode.tag_tree[nameSpace]) {
+          //console.log(data.interactions[i].interaction.tag_tree.telecom.brand)
+          //console.log("we have tags");
+          for (var m = 0; m < interactionNode.tag_tree[nameSpace].length; m++) {
+            //check to see if we have written a header already
+            if(vedoHeader[nameSpace]){
+              console.log("we shoudl write header");
+              writeData[nameSpace] += 'id,' + nameSpace + '\n';
+              vedoHeader[nameSpace] = false;
+            }
+            //console.log("pass "+m+" on "+nameSpace+" table, ");
+            writeData[nameSpace] += '\"' + interactionNode.id + '\"';
+            writeData[nameSpace] += ',\"' + interactionNode.tag_tree[nameSpace][m] + '\"\n';
+          }
+        }
+}
 
 function writeToFile(outputData,fileName){
   fs.appendFile(fileName, outputData, function(err) {
