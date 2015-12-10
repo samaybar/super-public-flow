@@ -1,6 +1,6 @@
 var fs = require('fs');
 var moment = require('moment');
-var settings = require('./settings.js');
+var settings = require('./settingsTags.js');
 
 //The name of data file to use -- created from getMongo.js
 var sourceData = settings.rawDataFileName;
@@ -16,13 +16,15 @@ var writeData = {content : '', topics : '', hashtags : '', links : ''};
 
 var vedoHeader = {};
 var vedoFileName = {};
+console.log(indexTags.length);
 for (var z = 0; z < indexTags.length; z++){
+  
   vedoHeader[indexTags[z]] = useHeaders;
   vedoFileName[indexTags[z]] = outputFilePrefix + "_super_public_" + indexTags[z] + ".csv";
-  console.log(vedoFileName[indexTags[z]]);
+  //console.log("file name:" + vedoFileName[indexTags[z]]);
   writeData[indexTags[z]] = '';
 }
-console.log(vedoHeader);
+
 
 
 
@@ -68,6 +70,8 @@ for (var k = 0; k < sample.length; k++){
   csvSample = jsonToCsv(sample[k]);
   //jsonToCsv(sample[k]);
 }  
+ 
+ 
   writeToFile(csvSample.content,outputFileName);
   writeToFile(csvSample.topics,topicFileName);
   writeToFile(csvSample.hashtags,hashtagFileName);
@@ -84,7 +88,7 @@ for (var k = 0; k < sample.length; k++){
  * @return obj
  */
 function jsonToCsv(data) {
-    console.log("items: " + data.interactions.length);
+    //console.log("items: " + data.interactions.length);
 
     for (var i = 0; i < data.interactions.length; i++) {
         var interactionText = data.interactions[i].interaction.content
@@ -172,21 +176,30 @@ function jsonToCsv(data) {
 
 function getTagData(interactionNode, nameSpace){
 //write Tag_Tree Table
-        if (interactionNode.tag_tree && interactionNode.tag_tree[nameSpace]) {
+  //var nameArray = nameSpace.split('.'); // ['automotive','brand']
+  var nodeNameString = "tag_tree." + nameSpace;
+  var tagLevelData = ref(interactionNode, nodeNameString);
+  
+        if (interactionNode.tag_tree && tagLevelData) {
           //console.log(data.interactions[i].interaction.tag_tree.telecom.brand)
           //console.log("we have tags");
-          for (var m = 0; m < interactionNode.tag_tree[nameSpace].length; m++) {
+          for (var m = 0; m < tagLevelData.length; m++) {
             //check to see if we have written a header already
             if(vedoHeader[nameSpace]){
               console.log("we shoudl write header");
               writeData[nameSpace] += 'id,' + nameSpace + '\n';
               vedoHeader[nameSpace] = false;
             }
+            var tagLevelDataItem = ref(interactionNode, nodeNameString)[m];
             //console.log("pass "+m+" on "+nameSpace+" table, ");
             writeData[nameSpace] += '\"' + interactionNode.id + '\"';
-            writeData[nameSpace] += ',\"' + interactionNode.tag_tree[nameSpace][m] + '\"\n';
+            writeData[nameSpace] += ',\"' + tagLevelDataItem + '\"\n';
           }
         }
+}
+
+function ref(obj, str) {
+    return str.split(".").reduce(function(o, x) { return o[x] }, obj);
 }
 
 function writeToFile(outputData,fileName){
