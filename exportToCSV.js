@@ -1,6 +1,6 @@
 var fs = require('fs');
 var moment = require('moment');
-var settings = require('./settingsTags.js');
+var settings = require('./settings.js');
 
 //The name of data file to use -- created from getMongo.js
 var sourceData = settings.rawDataFileName;

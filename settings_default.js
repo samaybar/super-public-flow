@@ -6,6 +6,6 @@ var settings = {
 	"collectFrom" : 0,//time at which earliest interactions were put into mongodb
 	"outputFilePrefix" : 'sp-flow',//for csv output files
 	"useHeaders" : true, //true for a new file -- it will put headers in; false will supress headers
-	"indexTags": ['']//eg ['profil','auto.brand'] //each namespace after interaction.tag_tree
+	"indexTags": ['']//eg ['profile','auto.brand'] //each namespace after interaction.tag_tree
 };
 module.exports = settings;
