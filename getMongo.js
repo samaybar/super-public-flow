@@ -1,6 +1,6 @@
 //This will get data from a mongoDB and write it to a local file
 //which can be processed into CSV for use in Tableau
-
+var i = 0;
 
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
@@ -37,7 +37,8 @@ var findSuperPublic = function(db, callback) {
    cursor.each(function(err, doc) {
       assert.equal(err, null);
       if (doc != null) {
-        console.log("Contact");
+        i += 1;
+        console.log("Contact..." + i);
          superPublicData.push(doc);
       } else {
          callback();
