@@ -82,7 +82,7 @@ function jsonToCsv(data) {
   //console.log("items: " + data.interactions.length);
 
   for (var i = 0; i < data.interactions.length; i++) {
-      var interactionText = data.interactions[i].interaction.content
+      var interactionText = data.interactions[i].interaction.content || "";
       interactionText = interactionText.replace(/\n/g,' \\n');
       //so that CSV doesn't break with quotes in content
       interactionText = interactionText.replace(/\"/g,' \'');
@@ -107,7 +107,7 @@ function jsonToCsv(data) {
         for (var j = 0; j < data.interactions[i].fb.topics.length; j++) {
           //check to see if we have written a header already
           if(topicHeader){
-            writeData.topics += 'id,topic,category,category_topic\n'
+            writeData.topics += 'id,topic,category,category_topic\n';
             topicHeader = false;
           }
           //console.log("pass "+j+" on topic table, "+i+" on main table");
@@ -123,7 +123,7 @@ function jsonToCsv(data) {
         for (var j = 0; j < data.interactions[i].interaction.hashtags.length; j++) {
           //check to see if we have written a header already
           if(hashtagHeader){
-            writeData.hashtags += 'id,hashtag\n'
+            writeData.hashtags += 'id,hashtag\n';
             hashtagHeader = false;
           }
           //console.log("pass "+j+" on hashtag table, "+i+" on main table");
@@ -138,7 +138,7 @@ function jsonToCsv(data) {
         for (var j = 0; j < data.interactions[i].links.url.length; j++) {
           //check to see if we have written a header already
           if(linkHeader){
-            writeData.links += 'id,url\n'
+            writeData.links += 'id,url\n';
             linkHeader = false;
           }
           //console.log("pass "+j+" on link table, "+i+" on main table");
