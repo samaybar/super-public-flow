@@ -8,7 +8,7 @@
 STARTDATE="11/13/2015" 
 #latest date for SP Data
 ENDDATE="11/21/2015"
-HASH="<INDEX_HASH>"
+ID="<INDEX_ID>"
 AUTH="<PYLON_USERNAME:PYLON_API_KEY>"
 #number of records to pull each time
 COUNT=25
@@ -23,7 +23,7 @@ ENDUNIX=$(date  --date=$ENDDATE +%s)
 #echo $STARTUNIX
 #echo $ENDUNIX
 SPSAMPLE="$(curl -s -X POST https://api.datasift.com/v1.2/pylon/sample \
--d "{\"hash\": \"$HASH\", \"count\": $COUNT, \"filter\":\"fb.content exists\", \"start\":$STARTUNIX,\"end\":$ENDUNIX}" \
+-d "{\"id\": \"$ID\", \"count\": $COUNT, \"filter\":\"fb.content exists\", \"start\":$STARTUNIX,\"end\":$ENDUNIX}" \
 -H "Content-type: application/json" \
 -H "Authorization: $AUTH")"
 SIZE=${#SPSAMPLE}
