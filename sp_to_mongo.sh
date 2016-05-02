@@ -29,7 +29,7 @@ SPSAMPLE="$(curl -s -X POST https://api.datasift.com/v1.2/pylon/sample \
 SIZE=${#SPSAMPLE}
 if [ $SIZE -lt 100 ]; then
 echo $SPSAMPLE
-exit 1
+echo "nothing to save"
 else
 curl -i -X POST "https://api.mongolab.com/api/1/databases/$DBNAME/collections/$COLLECTIONNAME?apiKey=$MONGOAPIKEY" \
 -H "Content-Type:application/json" \
