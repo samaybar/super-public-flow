@@ -26,7 +26,10 @@ for (var z = 0; z < indexTags.length; z++){
   writeData[indexTags[z]] = '';
 }
 
-
+var writeTopics = false;
+var writeHashtags = false;
+var writeLinks = false;
+var writeTags = false;
 
 
 //the source file should be saved as a .js file and export array of Super Public objects
@@ -36,7 +39,7 @@ var data = require('./' + sourceData);
 //temp variables to check for headers
 var contentHeader = useHeaders, topicHeader = useHeaders, hashtagHeader = useHeaders, linkHeader = useHeaders;
 
-var outputFileName = outputFilePrefix + "_super_public_sample.csv";
+var outputFileName = outputFilePrefix + "_super_public_sample_tags.csv";
 var topicFileName = outputFilePrefix + "_super_public_topics.csv";
 var hashtagFileName = outputFilePrefix + "_super_public_hashtags.csv";
 var linkFileName = outputFilePrefix + "_super_public_links.csv";
@@ -48,7 +51,12 @@ var sample = data;
 
 //write content table
 if(contentHeader){  
-  writeData.content = 'id,date,created_at,content,media_type,subtype,language\n';
+  writeData.content = 'id,date,created_at,content,media_type,subtype,language';
+  for (var y = 0; y < indexTags.length; y++){
+    writeData.content += ',' + indexTags[y];
+  }
+
+  writeData.content += '\n';
   contentHeader = false;
 }
 
@@ -64,11 +72,19 @@ for (var k = 0; k < sample.length; k++){
  
 //write the csv data to files 
 writeToFile(csvSample.content,outputFileName);
-writeToFile(csvSample.topics,topicFileName);
-writeToFile(csvSample.hashtags,hashtagFileName);
-writeToFile(csvSample.links,linkFileName);
-for (var z = 0; z < indexTags.length; z++){
-  writeToFile(csvSample[indexTags[z]],vedoFileName[indexTags[z]]); 
+if (writeTopics){
+  writeToFile(csvSample.topics,topicFileName);
+}
+if (writeHashtags){
+  writeToFile(csvSample.hashtags,hashtagFileName);
+}
+if (writeLinks){
+  writeToFile(csvSample.links,linkFileName);
+}
+if (writeTags){
+  for (var z = 0; z < indexTags.length; z++){
+    writeToFile(csvSample[indexTags[z]],vedoFileName[indexTags[z]]); 
+  }
 }
  
 
@@ -90,7 +106,6 @@ function jsonToCsv(data) {
       //strip off the day of the week on the date
       createdDate = contentDate.replace(/(.+?),\s/g,'');
       //version of date without time
-      
       shortDate = moment.utc(contentDate,"ddd, DD MMM YYYY HH:mm:ss Z").format("MM/DD/YYYY HH:mm:ss");
       writeData.content += '\"' + data.interactions[i].interaction.id + '\"';
       writeData.content += ',\"' + shortDate + '\"';
@@ -98,12 +113,23 @@ function jsonToCsv(data) {
       writeData.content += ',\"' + interactionText + '\"';
       writeData.content += ',\"' + data.interactions[i].interaction.media_type + '\"';
       writeData.content += ',\"' + data.interactions[i].interaction.subtype + '\"';
-      writeData.content += ',\"' + data.interactions[i].fb.language + '\"\n';
+      writeData.content += ',\"' + data.interactions[i].fb.language + '\"';
+      if (data.interactions[i].interaction.tag_tree){
+        for (var y = 0; y < indexTags.length; y++){
+          getTagData_flat(data.interactions[i].interaction,indexTags[y]);
+        }
+      }
+      else {
+        for (var i = 0; y < indexTags.length; i++){
+          writeData.content +=  ',';
+        }
+      }
+      writeData.content += '\n';
       //console.log("pass "+i+" on main table");
       //console.log("pass "+i+" on main table");
       
       //write topic table
-      if (data.interactions[i].fb.topics) {
+      if (data.interactions[i].fb.topics && writeTopics) {
         for (var j = 0; j < data.interactions[i].fb.topics.length; j++) {
           //check to see if we have written a header already
           if(topicHeader){
@@ -119,7 +145,7 @@ function jsonToCsv(data) {
       }
 
       //write hashtag table
-      if (data.interactions[i].interaction.hashtags) {
+      if (data.interactions[i].interaction.hashtags && writeHashtags) {
         for (var j = 0; j < data.interactions[i].interaction.hashtags.length; j++) {
           //check to see if we have written a header already
           if(hashtagHeader){
@@ -133,7 +159,7 @@ function jsonToCsv(data) {
       }
 
       //write link table
-      if (data.interactions[i].links && data.interactions[i].links.url) {
+      if (data.interactions[i].links && data.interactions[i].links.url && writeLinks) {
         //console.log(data.interactions[i].fb.topics)
         for (var j = 0; j < data.interactions[i].links.url.length; j++) {
           //check to see if we have written a header already
@@ -148,7 +174,7 @@ function jsonToCsv(data) {
       }
 
       //write tags
-      if (data.interactions[i].interaction.tag_tree){
+      if (data.interactions[i].interaction.tag_tree && writeTags){
         for (var y = 0; y < indexTags.length; y++){
           getTagData(data.interactions[i].interaction,indexTags[y]);
         }
@@ -156,6 +182,35 @@ function jsonToCsv(data) {
     }
   return writeData;
 }
+
+function getTagData_flat(interactionNode, nameSpace){
+  var nodeNameString = "tag_tree." + nameSpace;
+  var tagLevelData = ref(interactionNode, nodeNameString);
+  //if there is data for that tag, write it
+  if (interactionNode.tag_tree && tagLevelData) {
+    //console.log("we have tags");
+    for (var m = 0; m < tagLevelData.length; m++) {
+      var tagLevelDataItem = ref(interactionNode, nodeNameString)[m];
+      //if it is the first item for the tag, separate from prior column,open quotes
+      if(m === 0){
+        writeData.content += ',\"';
+      } 
+      //if there is more than one value for a tag, separate with comma
+      if(m>0){
+        writeData.content += ',';
+      } 
+      writeData.content += tagLevelDataItem;
+    }
+  writeData.content += '\"';
+  }
+  //there is no data for that tag, so just write the comma
+  else {
+    writeData.content += ',';
+  }
+  
+  
+}
+
 
 //populate data from Tag_Tree Table
 function getTagData(interactionNode, nameSpace){

@@ -25,10 +25,12 @@ www.mongolab.com.
 ##2. Retrieve data from mongoDB and create CSV files for use in Tableau
 * Step 5: configure the settings_default.js file (and rename as settings.js)
 * Step 6: node getMongo.js --> this will grab the data from the mongoDB and write it to a file, named as specified in the settings.js -- rawDataFileName
-* Step 7: node exportToCSV.js --> this will take the data in the file just created and parse it into 4 csv tables
+* Step 7: node exportToCSV.js --> this will take the data in the file just created and parse it into 4+ csv tables
 	-- sp-flow_super_public_sample.csv --> contains the text and other main level data
 	-- sp-flow_super_public_topics.csv --> contains the topics associated with each post
 	-- sp-flow_super_public_hashtags.csv --> contains the hashtags associated with each post
 	-- sp-flow_super_public_links.csv --> contains the links associated with each post
+	-- sp-flow_super_public_<tag_name>.csv --> contains the tag values associated with <tag_name> (configure tags in settings.js)
+* Step 7a: node exportToCSV_flat.js --> this will include the tags in the sample.csv file
 
 
